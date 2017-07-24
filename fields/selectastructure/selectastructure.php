@@ -57,18 +57,39 @@ class SelectAStructureField extends BaseField {
 		    $structurepage = page($this->structurepage());
 		}
 		$structurefield = $this->structurefield();
-		$structurefield = $structurepage->$structurefield();
-		$optionkey = $this->optionkey();
+		$query = $this->query();
 
-		// If the strucure field exists, toStrucure() it.
-		if($this->page($structurepage)->field($structurefield)) {
-			$structure = $structurefield->toStructure();
-		}
+		if ($query == 'children') {
+			foreach ($this->page($structurepage)->children()->visible() as $child) {
+				$slug = $child->slug();
+				$structurefield = $child->$structurefield();
+				$optionkey = $slug.'/'.$this->optionkey();
 
-		// Build the list of options.
-		foreach($structure as $entry)  {
-			$entry = $entry->$optionkey();
-			$this->options[] = $entry;
+				// If the strucure field exists, toStrucure() it.
+				if($this->page($child)->field($structurefield)) {
+					$structure = $structurefield->toStructure();
+				}
+
+				// Build the list of options.
+				foreach($structure as $entry)  {
+					$entry = $entry->$optionkey();
+					$this->options[] = $entry;
+				}
+			}
+		}else {
+			$structurefield = $structurepage->$structurefield();
+			$optionkey = $this->optionkey();
+
+			// If the strucure field exists, toStrucure() it.
+			if($this->page($structurepage)->field($structurefield)) {
+				$structure = $structurefield->toStructure();
+			}
+
+			// Build the list of options.
+			foreach($structure as $entry)  {
+				$entry = $entry->$optionkey();
+				$this->options[] = $entry;
+			}
 		}
 
 		// Add the options to the select field.
