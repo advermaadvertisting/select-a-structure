@@ -57,22 +57,21 @@ class SelectAStructureField extends BaseField {
 		    $structurepage = page($this->structurepage());
 		}
 		$structurefield = $this->structurefield();
+		$optionkey = $this->optionkey();
 		$query = $this->query();
 
 		if ($query == 'children') {
-			foreach ($this->page($structurepage)->children()->visible() as $child) {
+			foreach (page($structurepage)->children()->visible() as $child) {
 				$slug = $child->slug();
-				$structurefield = $child->$structurefield();
-				$optionkey = $slug.'/'.$this->optionkey();
 
-				// If the strucure field exists, toStrucure() it.
-				if($this->page($child)->field($structurefield)) {
-					$structure = $structurefield->toStructure();
+				// // If the strucure field exists, toStrucure() it.
+				if($child->$structurefield()) {
+					$structure = $child->$structurefield()->toStructure();
 				}
 
-				// Build the list of options.
+				// // Build the list of options.
 				foreach($structure as $entry)  {
-					$entry = $entry->$optionkey();
+					$entry = $slug.'/'.$entry->$optionkey();
 					$this->options[] = $entry;
 				}
 			}
