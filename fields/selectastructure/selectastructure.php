@@ -21,9 +21,9 @@ class SelectAStructureField extends BaseField {
 
 	public function option($value, $text, $selected = false) {
 		return new Brick('option', $this->i18n($text), array(
-		'value'    => $value,
-		'selected' => $selected
-	));
+			'value'    => $value,
+			'selected' => $selected
+		));
 	}
 
 	public function input() {
@@ -51,10 +51,10 @@ class SelectAStructureField extends BaseField {
 
 		// First, let's pull the page and field from the blueprint.
 		if($this->structurepage() == '/') {
-		    $structurepage = site();
+				$structurepage = site();
 		}
 		else {
-		    $structurepage = page($this->structurepage());
+				$structurepage = page($this->structurepage());
 		}
 		$structurefield = $this->structurefield();
 		$optionkey = $this->optionkey();
@@ -62,17 +62,16 @@ class SelectAStructureField extends BaseField {
 
 		if ($query == 'children') {
 			foreach (page($structurepage)->children()->visible() as $child) {
-				$slug = $child->slug();
-
-				// // If the strucure field exists, toStrucure() it.
+				// If the strucure field exists, toStrucure() it.
 				if($child->$structurefield()) {
 					$structure = $child->$structurefield()->toStructure();
 				}
 
-				// // Build the list of options.
+				// Build the list of options.
 				foreach($structure as $entry)  {
-					$entry = $slug.'/'.$entry->$optionkey();
-					$this->options[] = $entry;
+					$value = $child->title().' / '.$entry->$optionkey();
+					$key = $child->slug().' / '.$entry->contentid();
+					$this->options[$key] = $value;
 				}
 			}
 		}else {
@@ -87,13 +86,13 @@ class SelectAStructureField extends BaseField {
 			// Build the list of options.
 			foreach($structure as $entry)  {
 				$entry = $entry->$optionkey();
-				$this->options[] = $entry;
+				$this->options[$entry] = $entry;
 			}
 		}
 
 		// Add the options to the select field.
 		foreach($this->options() as $value => $text) {
-			$select->append($this->option($text, $text, $this->value() == $text));
+			$select->append($this->option($value, $text, $this->value() == $value));
 		}
 
 		$inner = new Brick('div');
