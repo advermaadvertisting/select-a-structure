@@ -70,7 +70,7 @@ class SelectAStructureField extends BaseField {
 				// Build the list of options.
 				foreach($structure as $entry)  {
 					$value = $child->title().' / '.$entry->$optionkey();
-					$key = $child->slug().' / '.$entry->contentid();
+					$key = $child->slug().'/'.$entry->contentid();
 					$this->options[$key] = $value;
 				}
 			}
